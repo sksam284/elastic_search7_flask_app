@@ -1,0 +1,62 @@
+{% extends "base.html" %} {% block content %}
+<script src="{{ url_for('static', filename='js/datatables.js') }}"></script>
+<style>
+    div.dataTables_wrapper {
+        margin-bottom: 4em;
+    }
+</style>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <script src="{{ url_for('static', filename='js/hide_message.js') }}"></script>
+    <div id="success-message">
+        <label style="width:100%; background: #29a745; color: white; text-align: center; padding: 10px 0;">{{ messages[0] }}</label>
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="row">
+    <div class="col-xs-8 col-sm-8 col-md-9 col-lg-10">
+        <h2 class="title">
+            City
+        </h2>
+    </div>
+    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
+        <a href="{{ url_for('city_create') }}" class="btn btn-success" role="button">Create</a>
+    </div>
+</div>
+<br>
+<div style="overflow-x: scroll">
+    <table id="datatable-city" class="table table-hover" cellspacing="0" width="100%">
+        <thead align="center">
+            <tr>
+                <th class="th-sm">Id</th>
+                <th class="th-sm">Name</th>
+                <th class="th-sm">State</th>
+                <th class="th-sm">Action</th>
+            </tr>
+        </thead>
+        <tbody align="center">
+            {%for data in cities%}
+            <tr>
+                <td>{{data["id"]}}</td>
+                <td>{{data["name"]}}</td>
+                <td>{{data["state"]}}</td>
+                <td>
+                    <a href="{{ url_for('city_edit', id=data['id'], state=data['parent']) }}">
+                        <i class='fas fa-pen'></i>
+                    </a>
+                    <form action = "{{url_for('city_delete', id=data['id'], state=data['parent']) }}" method="POST" style="display: inline;">
+                        <button type="submit" class="btn">
+                            <i class='fas fa-trash' style="color: red"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
+<br>
+<br>
+{% endblock %}

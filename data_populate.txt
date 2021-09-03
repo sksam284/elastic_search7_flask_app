@@ -1,0 +1,90 @@
+curl -X PUT 'http://localhost:9200/country_data4' -H 'content-type: application/json' \
+  -d '{
+    "settings": {
+        "index": {
+            "number_of_shards": 2,
+            "number_of_replicas": 1
+        }
+    },
+    "mappings": {
+        "properties": {
+            "name": {
+                "type": "text"
+            },
+            "state": {
+                "type": "text"
+            },
+            "country": {
+                "type": "text"
+            },
+            "relation_type": {
+                "type": "join",
+                "eager_global_ordinals": true,
+                "relations": {
+                    "country": "state",
+                    "state": "city"
+                }
+            }
+        }
+    }
+}'
+
+#insert countries
+curl -X PUT "localhost:9200/country_data4/_doc/1?routing=Afganistan" -H 'Content-Type: application/json' -d'
+{
+  "name": "Afganistan",
+  "relation_type": {
+    "name": "country"
+  }
+}
+'
+curl -X PUT "localhost:9200/country_data4/_doc/2?routing=India" -H 'Content-Type: application/json' -d'
+{
+  "name": "India",
+  "relation_type": {
+    "name": "country"
+  }
+}
+'
+
+#insert states bulk
+
+curl -X PUT \
+  'http://localhost:9200/country_data4/_bulk?routing=India' -H 'content-type: application/json' \
+  -d '
+    {"index": {"_type": "_doc", "_id": "3"}}
+    {"name":"Uttar Pradesh", "relation_type":{ "name":"state", "parent":"2" } }
+    {"index": {"_type": "_doc", "_id": "4"}}
+    {"name":"Madhya Pradesh", "relation_type":{ "name":"state", "parent":"2" } }
+    {"index": {"_type": "_doc", "_id": "5"}}
+    {"name":"Maharashtra", "relation_type":{ "name":"state", "parent":"2" } }
+'
+
+#insert state
+curl -X PUT \
+  'http://localhost:9200/country_data3/_doc/10?routing=India' -H 'content-type: application/json' \
+  -d '{"name":"Bang", "relation_type":{ "name":"state", "parent":"2" } }'
+'
+
+#insert cities bulk
+
+curl -X PUT \
+  'http://localhost:9200/country_data4/_bulk?routing=Maharashtra' -H 'content-type: application/json' \
+  -d '
+    {"index": {"_type": "_doc", "_id": "6"}}
+    {"name":"Mumbai", "relation_type":{ "name":"city", "parent":"5" } }
+    {"index": {"_type": "_doc", "_id": "7"}}
+    {"name":"Pune", "relation_type":{ "name":"city", "parent":"5" } }
+
+
+#query data
+curl -X GET 'http://localhost:9200/country_data4/_search?pretty=true' \
+  -H 'content-type: application/json' \
+  -d '{
+   "query":{
+      "parent_id":{
+         "type":"state",
+         "id":"2"
+      }
+   }
+}'

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+{% import "bootstrap/wtf.html" as wtf %}
+<div class="row">
+    <div class="col-xs-8 col-sm-8 col-md-9 col-lg-10">
+        <h2 class="title">
+            Create City
+        </h2>
+    </div>
+</div>
+
+{% for message in form.name.errors %}
+    <div>{{ message }}</div>
+{% endfor %}
+
+<form action = "{{ url_for('city_create') }}" method = post>
+    <fieldset>
+        {{ form.hidden_tag() }}
+        <div class="row">
+            <div class="col-sm-12">{{ wtf.form_field(form.name) }}</div>
+            <div class="col-sm-12">{{ wtf.form_field(form.state) }}</div>
+            <div class="col-sm-12"> <input type="submit" class="btn btn-primary" value="Create"></div>
+        </div>
+    </fieldset>
+</form>
+
+{% endblock %}
