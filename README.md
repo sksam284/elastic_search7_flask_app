@@ -1,22 +1,39 @@
+#Elastic search demo
 This project is responsive web application on Flask framework and elastic search
 
-Installation
+## Project Stack
 
-Step 1 - Install Elasticsearch 7.14.0
+1. Python
+2. Flask
+3. Elastic search
+4. Docker
 
-Step 2 - Add .env as given in shown in .env-example
+## Steps for setup using Docker
 
-Step 3 - Execute commands from data_populate.txt in terminal
+### Install Docker
 
-Step 4 - Install flask environment
+Please follow below links to install Docker Enginer/Docker Desktop on your respective environment
 
-- pip install pipenv
-- pipenv shell
-- pipenv update
-- python app.py
+- [MacOS](https://docs.docker.com/desktop/mac/install/)
+- [Linux](https://docs.docker.com/engine/install/ubuntu/)
+- [Windows](https://docs.docker.com/desktop/windows/install/)
 
-By default the app has debug mode on
+### Running Docker Compose Services
 
-Each new record is assigned with an unique id as timestamp in milli seconds
+Note:
 
-Link to app http://localhost:5000/
+- Change .env.example to .env, and make the required config changes
+
+- Build project by running next command: 
+> `docker-compose build` 
+- Start project by running next command: 
+> `docker-compose up -d` 
+- Build and up container in one command: 
+> `docker-compose up --build -d`		
+
+The server runs at `http://localhost:5000`
+elastic search server runs at: `http://localhost:9200`
+
+## Local Installation Steps
+
+If you are not using docker then please refer local_setup.md to setup the project

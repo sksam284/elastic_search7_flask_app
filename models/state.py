@@ -34,11 +34,11 @@ class State:
 
         if 'hits' in state_data and 'hits' in state_data['hits']:
             for data in state_data['hits']['hits']:
-                if data['_source']['relation_type']['name'] == 'country':
+                if data['_source'].get('relation_type') and data['_source']['relation_type']['name'] == 'country':
                     parent_map[data["_id"]] = data["_source"]["name"]
 
             states = [ {"id": data["_id"], "name": data["_source"]["name"], "country":parent_map.get(data['_source']['relation_type']['parent'], '-')}
-                 if data['_source']['relation_type']['name']=='state' else None
+                 if data['_source'].get('relation_type') and data['_source']['relation_type']['name']=='state' else None
                 for data in state_data['hits']['hits']
             ]
             states = [state for state in states if state]

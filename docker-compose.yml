@@ -1,0 +1,43 @@
+version: '3.9'
+services:
+  elastic_search_demo:
+    image: elastic_search_demo
+    build:
+      context: .
+      args: ["-t", "elastic_search_demo", "--pull"]
+    env_file:
+      - .env
+    ports:
+      - 5000:5000
+    networks:
+      - elastic-net
+    volumes:
+      - type: bind
+        source: .
+        target: /opt/
+    depends_on:
+      - elastic
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+    container_name: elastic
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms256m -Xmx256m
+      - XPACK_SECURITY_ENABLED=false
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - elastic-net
+    healthcheck:
+      test: "curl http://elasticsearch:9200"
+      interval: "1s"
+      timeout: "3s"
+      retries: 60
+networks:
+  elastic-net:
+    driver: bridge
+volumes:
+  elastic_data:

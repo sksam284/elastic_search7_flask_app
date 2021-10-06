@@ -15,7 +15,7 @@ class Country:
                                  filter_path=['hits.hits._id', 'hits.hits._source'])
         countries = []
         if 'hits' in country_data and 'hits' in country_data['hits']:
-            countries = [{"id": data["_id"], "name": data["_source"]["name"]} if data['_source']['relation_type']['name']=='country' else None for data in country_data['hits']['hits'] ]
+            countries = [{"id": data["_id"], "name": data["_source"]["name"]} if data['_source'].get('relation_type') and data['_source']['relation_type']['name']=='country' else None for data in country_data['hits']['hits'] ]
             countries = [country for country in countries if country]
         return countries
 

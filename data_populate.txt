@@ -74,7 +74,7 @@ curl -X PUT \
     {"index": {"_type": "_doc", "_id": "6"}}
     {"name":"Mumbai", "relation_type":{ "name":"city", "parent":"5" } }
     {"index": {"_type": "_doc", "_id": "7"}}
-    {"name":"Pune", "relation_type":{ "name":"city", "parent":"5" } }
+    {"name":"Pune", "relation_type":{ "name":"city", "parent":"5" } }'
 
 
 #query data
